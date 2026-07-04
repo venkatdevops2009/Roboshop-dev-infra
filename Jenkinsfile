@@ -1,7 +1,16 @@
+def modules = [
+    '40-databases',
+    '50-backend-alb',
+    '70-acm',
+    '80-frontend-alb',
+    '90-components',
+    '95-cdn'
+]
+
 def terraformModule(String moduleDir) {
     dir(moduleDir) {
         sh '''
-            terraform init            
+            terraform init -input=false
             terraform validate
 
             if [ "${ACTION}" = "plan" ] || [ "${ACTION}" = "apply" ]; then
@@ -53,57 +62,28 @@ pipeline {
 
         stage('Approval') {
             when {
-                expression { params.ACTION == 'apply' || params.ACTION == 'destroy' }
+                expression { params.ACTION in ['apply', 'destroy'] }
             }
             steps {
                 input message: "Approve ${params.ACTION.toUpperCase()}?"
             }
         }
 
-        stage('40-Databases') {
+        stage('Terraform Execution') {
             steps {
                 script {
-                    terraformModule('40-databases')
-                }
-            }
-        }
 
-        stage('50-Backend-ALB') {
-            steps {
-                script {
-                    terraformModule('50-backend-alb')
-                }
-            }
-        }        
+                    def executionOrder = modules
 
-        stage('70-ACM') {
-            steps {
-                script {
-                    terraformModule('70-acm')
-                }
-            }
-        }
+                    // 🔥 Reverse ONLY for destroy
+                    if (params.ACTION == 'destroy') {
+                        executionOrder = modules.reverse()
+                    }
 
-        stage('80-Frontend-ALB') {
-            steps {
-                script {
-                    terraformModule('80-frontend-alb')
-                }
-            }
-        }
-
-        stage('90-Components') {
-            steps {
-                script {
-                    terraformModule('90-components')
-                }
-            }
-        }
-
-        stage('95-CDN') {
-            steps {
-                script {
-                    terraformModule('95-cdn')
+                    executionOrder.each { module ->
+                        echo "Running Terraform in ${module}"
+                        terraformModule(module)
+                    }
                 }
             }
         }
