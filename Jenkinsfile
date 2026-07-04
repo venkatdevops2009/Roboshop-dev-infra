@@ -1,3 +1,25 @@
+def terraformModule(String moduleDir) {
+    dir(moduleDir) {
+        sh '''
+            terraform init
+            terraform fmt -check
+            terraform validate
+
+            if [ "${ACTION}" = "plan" ] || [ "${ACTION}" = "apply" ]; then
+                terraform plan -out=tfplan
+            fi
+
+            if [ "${ACTION}" = "apply" ]; then
+                terraform apply -auto-approve tfplan
+            fi
+
+            if [ "${ACTION}" = "destroy" ]; then
+                terraform destroy -auto-approve
+            fi
+        '''
+    }
+}
+
 pipeline {
 
     agent any
@@ -10,18 +32,16 @@ pipeline {
     }
 
     parameters {
-
         choice(
             name: 'ACTION',
             choices: ['plan', 'apply', 'destroy'],
             description: 'Terraform Action'
         )
-
     }
 
     environment {
-        AWS_DEFAULT_REGION = "us-east-1"
-        TF_IN_AUTOMATION = "true"
+        AWS_DEFAULT_REGION = 'us-east-1'
+        TF_IN_AUTOMATION   = 'true'
     }
 
     stages {
@@ -32,254 +52,83 @@ pipeline {
             }
         }
 
-        stage('Terraform Format Check') {
-            when {
-                expression { params.ACTION != "destroy" }
-            }
-            steps {
-                sh '''
-                terraform -chdir=Roboshop-dev-infra/40-databases fmt -check
-                terraform -chdir=Roboshop-dev-infra/50-backend-alb fmt -check
-                terraform -chdir=Roboshop-dev-infra/70-acm fmt -check
-                terraform -chdir=Roboshop-dev-infra/80-forntend-alb fmt -check
-                terraform -chdir=Roboshop-dev-infra/90-componets fmt -check
-                terraform -chdir=Roboshop-dev-infra/95-cdn fmt -check
-                '''
-            }
-        }
-
-        stage('Terraform Validate') {
-            when {
-                expression { params.ACTION != "destroy" }
-            }
-            steps {
-
-                sh '''
-                terraform -chdir=Roboshop-dev-infra/40-databases init
-                terraform -chdir=Roboshop-dev-infra/50-backend-alb init
-                terraform -chdir=Roboshop-dev-infra/70-acm init
-                terraform -chdir=Roboshop-dev-infra/80-forntend-alb init
-                terraform -chdir=Roboshop-dev-infra/90-componets init
-                terraform -chdir=Roboshop-dev-infra/95-cdn init                
-                '''
-            }
-        }
-
-        stage('Terraform Plan') {
-
-            when {
-                expression {
-                    params.ACTION == "plan" || params.ACTION == "apply"
-                }
-            }
-
-            steps {
-
-                sh '''
-                terraform -chdir=Roboshop-dev-infra/40-databases plan -out=tfplan
-                terraform -chdir=Roboshop-dev-infra/50-backend-alb plan -out=tfplan
-                terraform -chdir=Roboshop-dev-infra/70-acm plan -out=tfplan
-                terraform -chdir=Roboshop-dev-infra/80-forntend-alb plan -out=tfplan
-                terraform -chdir=Roboshop-dev-infra/90-componets plan -out=tfplan
-                terraform -chdir=Roboshop-dev-infra/95-cdn plan -out=tfplan                 
-                '''
-
-            }
-
-        }
-
         stage('Approval') {
-
             when {
-                expression {
-                    params.ACTION == "apply"
-                }
+                expression { params.ACTION == 'apply' || params.ACTION == 'destroy' }
             }
-
             steps {
-                input message: "Approve Infrastructure Deployment?"
+                input message: "Approve ${params.ACTION.toUpperCase()}?"
             }
-
         }
 
-        stage('Terraform Apply - databases') {
-
-            when {
-                expression {
-                    params.ACTION == "apply"
-                }
-            }
-
+        stage('40-Databases') {
             steps {
-
-                dir('Roboshop-dev-infra/40-databases') {
-
-                    sh '''
-                    terraform apply -auto-approve tfplan
-                    '''
-
+                script {
+                    terraformModule('40-databases')
                 }
-
             }
-
         }
 
-        stage('Terraform Apply - Backend') {
-
-            when {
-                expression {
-                    params.ACTION == "apply"
-                }
-            }
-
+        stage('50-Backend-ALB') {
             steps {
-
-                dir('Roboshop-dev-infra/50-backend') {
-
-                    sh '''
-                    terraform apply -auto-approve tfplan
-                    '''
-
+                script {
+                    terraformModule('50-backend-alb')
                 }
-
             }
-
         }
 
-        stage('Terraform Apply - ACM') {
-
-            when {
-                expression {
-                    params.ACTION == "apply"
-                }
-            }
-
+        stage('60-Catalogue') {
             steps {
-
-                dir('Roboshop-dev-infra/70-acm plan') {
-
-                    sh '''
-                    terraform apply -auto-approve tfplan
-                    '''
-
+                script {
+                    terraformModule('60-catalogue')
                 }
-
             }
-
         }
 
-        stage('Terraform Apply - Frontend') {
-
-            when {
-                expression {
-                    params.ACTION == "apply"
-                }
-            }
-
+        stage('70-ACM') {
             steps {
-
-                dir('Roboshop-dev-infra/80-forntend-alb plan') {
-
-                    sh '''
-                    terraform apply -auto-approve tfplan
-                    '''
-
+                script {
+                    terraformModule('70-acm')
                 }
-
             }
-
         }
 
-        stage('Terraform Apply - Components') {
-
-            when {
-                expression {
-                    params.ACTION == "apply"
-                }
-            }
-
+        stage('80-Frontend-ALB') {
             steps {
-
-                dir('Roboshop-dev-infra/90-components plan') {
-
-                    sh '''
-                    terraform apply -auto-approve tfplan
-                    '''
-
+                script {
+                    terraformModule('80-frontend-alb')
                 }
-
             }
-
         }
 
-        stage('Terraform Apply - cdn') {
-
-            when {
-                expression {
-                    params.ACTION == "apply"
-                }
-            }
-
+        stage('90-Components') {
             steps {
-
-                dir('Roboshop-dev-infra/95-cdn plan') {
-
-                    sh '''
-                    terraform apply -auto-approve tfplan
-                    '''
-
+                script {
+                    terraformModule('90-components')
                 }
-
             }
-
         }
 
-        
-        stage('Terraform Destroy') {
-
-            when {
-                expression {
-                    params.ACTION == "destroy"
+        stage('95-CDN') {
+            steps {
+                script {
+                    terraformModule('95-cdn')
                 }
             }
-
-            steps {
-
-                input message: "Destroy Infrastructure?"
-
-                sh '''
-                terraform -chdir=Roboshop-dev-infra/40-databases destroy -auto-approve
-
-                terraform -chdir=Roboshop-dev-infra/50-backend-alb destroy -auto-approve
-
-                terraform -chdir=Roboshop-dev-infra/70-acm destroy -auto-approve
-
-                terraform -chdir=Roboshop-dev-infra/80-forntend-alb destroy -auto-approve
-
-                terraform -chdir=Roboshop-dev-infra/90-componets destroy -auto-approve
-
-                terraform -chdir=Roboshop-dev-infra/95-cdn destroy -auto-approve                
-
-                '''
-
-            }
-
         }
-
     }
 
     post {
-
         success {
-            echo "Deployment Completed Successfully."
+            echo 'Pipeline completed successfully.'
         }
 
         failure {
-            echo "Deployment Failed."
+            echo 'Pipeline failed.'
         }
 
-       
-
+        always {
+            cleanWs()
+        }
     }
-
 }
