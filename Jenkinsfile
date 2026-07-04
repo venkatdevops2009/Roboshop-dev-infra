@@ -38,12 +38,12 @@ pipeline {
             }
             steps {
                 sh '''
-                terraform -chdir=roboshop-dev-infra/40-databases fmt -check
-                terraform -chdir=roboshop-dev-infra/50-backend-alb fmt -check
-                terraform -chdir=roboshop-dev-infra/70-acm fmt -check
-                terraform -chdir=roboshop-dev-infra/80-forntend-alb fmt -check
-                terraform -chdir=roboshop-dev-infra/90-componets fmt -check
-                terraform -chdir=roboshop-dev-infra/95-cdn fmt -check
+                terraform -chdir=Roboshop-dev-infra/40-databases fmt -check
+                terraform -chdir=Roboshop-dev-infra/50-backend-alb fmt -check
+                terraform -chdir=Roboshop-dev-infra/70-acm fmt -check
+                terraform -chdir=Roboshop-dev-infra/80-forntend-alb fmt -check
+                terraform -chdir=Roboshop-dev-infra/90-componets fmt -check
+                terraform -chdir=Roboshop-dev-infra/95-cdn fmt -check
                 '''
             }
         }
@@ -55,12 +55,12 @@ pipeline {
             steps {
 
                 sh '''
-                terraform -chdir=roboshop-dev-infra/40-databases init
-                terraform -chdir=roboshop-dev-infra/50-backend-alb init
-                terraform -chdir=roboshop-dev-infra/70-acm init
-                terraform -chdir=roboshop-dev-infra/80-forntend-alb init
-                terraform -chdir=roboshop-dev-infra/90-componets init
-                terraform -chdir=roboshop-dev-infra/95-cdn init                
+                terraform -chdir=Roboshop-dev-infra/40-databases init
+                terraform -chdir=Roboshop-dev-infra/50-backend-alb init
+                terraform -chdir=Roboshop-dev-infra/70-acm init
+                terraform -chdir=Roboshop-dev-infra/80-forntend-alb init
+                terraform -chdir=Roboshop-dev-infra/90-componets init
+                terraform -chdir=Roboshop-dev-infra/95-cdn init                
                 '''
             }
         }
@@ -76,12 +76,12 @@ pipeline {
             steps {
 
                 sh '''
-                terraform -chdir=roboshop-dev-infra/40-databases plan -out=tfplan
-                terraform -chdir=roboshop-dev-infra/50-backend-alb plan -out=tfplan
-                terraform -chdir=roboshop-dev-infra/70-acm plan -out=tfplan
-                terraform -chdir=roboshop-dev-infra/80-forntend-alb plan -out=tfplan
-                terraform -chdir=roboshop-dev-infra/90-componets plan -out=tfplan
-                terraform -chdir=roboshop-dev-infra/95-cdn plan -out=tfplan                 
+                terraform -chdir=Roboshop-dev-infra/40-databases plan -out=tfplan
+                terraform -chdir=Roboshop-dev-infra/50-backend-alb plan -out=tfplan
+                terraform -chdir=Roboshop-dev-infra/70-acm plan -out=tfplan
+                terraform -chdir=Roboshop-dev-infra/80-forntend-alb plan -out=tfplan
+                terraform -chdir=Roboshop-dev-infra/90-componets plan -out=tfplan
+                terraform -chdir=Roboshop-dev-infra/95-cdn plan -out=tfplan                 
                 '''
 
             }
@@ -112,7 +112,7 @@ pipeline {
 
             steps {
 
-                dir('roboshop-dev-infra/40-databases') {
+                dir('Roboshop-dev-infra/40-databases') {
 
                     sh '''
                     terraform apply -auto-approve tfplan
@@ -134,7 +134,7 @@ pipeline {
 
             steps {
 
-                dir('roboshop-dev-infra/50-backend') {
+                dir('Roboshop-dev-infra/50-backend') {
 
                     sh '''
                     terraform apply -auto-approve tfplan
@@ -156,7 +156,7 @@ pipeline {
 
             steps {
 
-                dir('roboshop-dev-infra/70-acm plan') {
+                dir('Roboshop-dev-infra/70-acm plan') {
 
                     sh '''
                     terraform apply -auto-approve tfplan
@@ -178,7 +178,7 @@ pipeline {
 
             steps {
 
-                dir('roboshop-dev-infra/80-forntend-alb plan') {
+                dir('Roboshop-dev-infra/80-forntend-alb plan') {
 
                     sh '''
                     terraform apply -auto-approve tfplan
@@ -200,7 +200,7 @@ pipeline {
 
             steps {
 
-                dir('roboshop-dev-infra/90-components plan') {
+                dir('Roboshop-dev-infra/90-components plan') {
 
                     sh '''
                     terraform apply -auto-approve tfplan
@@ -222,7 +222,7 @@ pipeline {
 
             steps {
 
-                dir('roboshop-dev-infra/95-cdn plan') {
+                dir('Roboshop-dev-infra/95-cdn plan') {
 
                     sh '''
                     terraform apply -auto-approve tfplan
@@ -248,17 +248,17 @@ pipeline {
                 input message: "Destroy Infrastructure?"
 
                 sh '''
-                terraform -chdir=roboshop-dev-infra/40-databases destroy -auto-approve
+                terraform -chdir=Roboshop-dev-infra/40-databases destroy -auto-approve
 
-                terraform -chdir=roboshop-dev-infra/50-backend-alb destroy -auto-approve
+                terraform -chdir=Roboshop-dev-infra/50-backend-alb destroy -auto-approve
 
-                terraform -chdir=roboshop-dev-infra/70-acm destroy -auto-approve
+                terraform -chdir=Roboshop-dev-infra/70-acm destroy -auto-approve
 
-                terraform -chdir=roboshop-dev-infra/80-forntend-alb destroy -auto-approve
+                terraform -chdir=Roboshop-dev-infra/80-forntend-alb destroy -auto-approve
 
-                terraform -chdir=roboshop-dev-infra/90-componets destroy -auto-approve
+                terraform -chdir=Roboshop-dev-infra/90-componets destroy -auto-approve
 
-                terraform -chdir=roboshop-dev-infra/95-cdn destroy -auto-approve                
+                terraform -chdir=Roboshop-dev-infra/95-cdn destroy -auto-approve                
 
                 '''
 
