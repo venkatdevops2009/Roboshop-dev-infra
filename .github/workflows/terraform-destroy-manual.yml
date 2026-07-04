@@ -1,0 +1,42 @@
+name: Terraform Destroy (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "DESTROY_ALL" to confirm'
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  destroy:
+    name: Confirm Destruction
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate confirmation
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "DESTROY_ALL" ]; then
+            echo "❌ Destruction not confirmed. Type 'DESTROY_ALL' to proceed."
+            exit 1
+          fi
+          echo "⚠️  Destruction confirmed!"
+
+      - name: Show destruction order
+        run: |
+          echo "Infrastructure will be destroyed in REVERSE order:"
+          echo "1. 95-cdn"
+          echo "2. 90-components"
+          echo "3. 80-frontend-alb"
+          echo "4. 70-acm"
+          echo "5. 60-catalogue"
+          echo "6. 50-backend-alb"
+          echo "7. 40-databases"
+          echo "8. 30-bastion"
+          echo "9. 20-sg-rules"
+          echo "10. 10-sg"
+          echo "11. 00-vpc"
+          echo ""
+          echo "Run locally: for dir in 95-cdn 90-components ... 00-vpc; do (cd \$dir && terraform destroy -auto-approve); done"

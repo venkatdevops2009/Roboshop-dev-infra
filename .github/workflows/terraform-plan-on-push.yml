@@ -1,0 +1,47 @@
+name: Terraform Plan on Push
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.tf'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        terraform-dir: [
+          '40-databases',
+          '50-backend-alb',
+          '70-acm',
+          '80-frontend-alb',
+          '90-components',
+          '95-cdn'
+        ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: '1.10.0'
+
+      - name: Terraform Init
+        working-directory: ${{ matrix.terraform-dir }}
+        run: terraform init -backend=false
+        continue-on-error: true
+
+      - name: Terraform Plan
+        working-directory: ${{ matrix.terraform-dir }}
+        run: terraform plan -no-color
+        continue-on-error: true

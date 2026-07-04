@@ -1,0 +1,36 @@
+name: Terraform Lint
+
+on:
+  pull_request:
+    paths:
+      - '**.tf'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: '1.10.0'
+
+      - name: Check for hardcoded values
+        run: |
+          echo "Checking for configuration issues..."
+          
+          if grep -r "remote-state-90s-dev" --include="*.tf" . 2>/dev/null; then
+            echo "⚠️  Found hardcoded S3 bucket: remote-state-90s-dev"
+          fi
+          
+          if grep -r "daws90s.shop" --include="*.tf" . 2>/dev/null; then
+            echo "⚠️  Found hardcoded domain: daws90s.shop"
+          fi

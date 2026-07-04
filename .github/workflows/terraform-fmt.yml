@@ -1,0 +1,32 @@
+name: Terraform Format Check
+
+on:
+  pull_request:
+    paths:
+      - '**.tf'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  format:
+    name: Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: '1.10.0'
+
+      - name: Check formatting
+        run: |
+          terraform fmt -check -recursive . || {
+            echo "❌ Terraform formatting issues found!"
+            exit 1
+          }

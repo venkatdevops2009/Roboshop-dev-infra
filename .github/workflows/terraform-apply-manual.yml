@@ -1,0 +1,48 @@
+name: Terraform Apply (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_dir:
+        description: 'Which layer to apply (e.g., 40-databases)'
+        required: true
+        type: choice
+        options:
+          - '40-databases'
+          - '50-backend-alb'
+          - '70-acm'
+          - '80-frontend-alb'
+          - '90-components'
+          - '95-cdn'
+
+permissions:
+  contents: read
+
+jobs:
+  apply:
+    name: Manual Apply
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: '1.10.0'
+
+      - name: Show what would be applied
+        working-directory: ${{ github.event.inputs.target_dir }}
+        run: |
+          terraform init -backend=false
+          terraform plan -no-color
+        continue-on-error: true
+
+      - name: Instructions
+        run: |
+          echo "📋 To apply changes:"
+          echo "1. Review the plan above"
+          echo "2. Run locally: cd ${{ github.event.inputs.target_dir }} && terraform apply"
+          echo ""
+          echo "⚠️  Ensure AWS credentials are configured!"
