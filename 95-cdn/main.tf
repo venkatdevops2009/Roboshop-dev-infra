@@ -84,7 +84,7 @@ resource "aws_cloudfront_distribution" "roboshop" {
 
 resource "aws_route53_record" "www" {
   zone_id = var.zone_id
-  name    = "${var.project}-cdn.daws90s.shop" # *.daws90s.shop
+  name    = "${var.project}-cdn.piridishop.shop" # *.daws90s.shop
   type    = "A"
 
   alias {
