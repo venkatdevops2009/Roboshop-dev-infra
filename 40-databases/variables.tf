@@ -1,20 +1,20 @@
 variable "project" {
-    default = "roboshop"
+  default = "roboshop"
 }
 
 variable "environment" {
-    default = "dev"
+  default = "dev"
 }
 
 variable "zone_id" {
-    default = "Z0353101YWAUTK0SB32S"
-}  
+  default = "Z0353101YWAUTK0SB32S"
+}
 
 variable "domain_name" {
-    default = "piridishop.shop"
+  default = "piridishop.shop"
 }
 
 variable "mysql_root_password" {
-    type = string
-    default = "RoboShop@1"
+  type    = string
+  default = "RoboShop@1"
 }

@@ -8,11 +8,11 @@ terraform {
 
   # remote state storage location
   backend "s3" {
-    bucket         = "roboshop-dev-piridi"
-    key            = "roboshop-frontend-alb.tfstate"
-    region         = "us-east-1"
-    encrypt        = true
-    use_lockfile   = true # Enables native S3 state locking (Terraform 1.10+)
+    bucket       = "roboshop-dev-piridi"
+    key          = "roboshop-frontend-alb.tfstate"
+    region       = "us-east-1"
+    encrypt      = true
+    use_lockfile = true # Enables native S3 state locking (Terraform 1.10+)
   }
 }
 

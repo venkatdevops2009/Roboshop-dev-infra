@@ -26,7 +26,7 @@ jobs:
 
       - name: Check formatting
         run: |
-          terraform fmt -recursive
+          
           terraform fmt -check -recursive . || {
             echo "❌ Terraform formatting issues found!"
             exit 1

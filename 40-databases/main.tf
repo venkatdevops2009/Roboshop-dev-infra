@@ -1,12 +1,12 @@
 resource "aws_instance" "mongodb" {
-  ami           = data.aws_ami.joindevops.id
-  instance_type = "t3.micro"
+  ami                    = data.aws_ami.joindevops.id
+  instance_type          = "t3.micro"
   vpc_security_group_ids = [local.mongodb_sg_id]
-  subnet_id = local.database_subnet_id
-  
+  subnet_id              = local.database_subnet_id
+
   tags = merge(
     {
-        Name = "${local.common_name}-mongodb"
+      Name = "${local.common_name}-mongodb"
     },
     local.common_tags
   )
@@ -18,10 +18,10 @@ resource "terraform_data" "mongodb" {
   ]
 
   connection {
-    type        = "ssh"
-    user        = "ec2-user"
+    type     = "ssh"
+    user     = "ec2-user"
     password = "DevOps321"
-    host        = aws_instance.mongodb.private_ip
+    host     = aws_instance.mongodb.private_ip
   }
 
   provisioner "file" {
@@ -38,14 +38,14 @@ resource "terraform_data" "mongodb" {
 }
 
 resource "aws_instance" "redis" {
-  ami           = data.aws_ami.joindevops.id
-  instance_type = "t3.micro"
+  ami                    = data.aws_ami.joindevops.id
+  instance_type          = "t3.micro"
   vpc_security_group_ids = [local.redis_sg_id]
-  subnet_id = local.database_subnet_id
-  
+  subnet_id              = local.database_subnet_id
+
   tags = merge(
     {
-        Name = "${local.common_name}-redis"
+      Name = "${local.common_name}-redis"
     },
     local.common_tags
   )
@@ -57,10 +57,10 @@ resource "terraform_data" "redis" {
   ]
 
   connection {
-    type        = "ssh"
-    user        = "ec2-user"
+    type     = "ssh"
+    user     = "ec2-user"
     password = "DevOps321"
-    host        = aws_instance.redis.private_ip
+    host     = aws_instance.redis.private_ip
   }
 
   provisioner "file" {
@@ -77,14 +77,14 @@ resource "terraform_data" "redis" {
 }
 
 resource "aws_instance" "rabbitmq" {
-  ami           = data.aws_ami.joindevops.id
-  instance_type = "t3.micro"
+  ami                    = data.aws_ami.joindevops.id
+  instance_type          = "t3.micro"
   vpc_security_group_ids = [local.rabbitmq_sg_id]
-  subnet_id = local.database_subnet_id
-  
+  subnet_id              = local.database_subnet_id
+
   tags = merge(
     {
-        Name = "${local.common_name}-rabbitmq"
+      Name = "${local.common_name}-rabbitmq"
     },
     local.common_tags
   )
@@ -96,10 +96,10 @@ resource "terraform_data" "rabbitmq" {
   ]
 
   connection {
-    type        = "ssh"
-    user        = "ec2-user"
+    type     = "ssh"
+    user     = "ec2-user"
     password = "DevOps321"
-    host        = aws_instance.rabbitmq.private_ip
+    host     = aws_instance.rabbitmq.private_ip
   }
 
   provisioner "file" {
@@ -116,15 +116,15 @@ resource "terraform_data" "rabbitmq" {
 }
 
 resource "aws_instance" "mysql" {
-  ami           = data.aws_ami.joindevops.id
-  instance_type = "t3.micro"
+  ami                    = data.aws_ami.joindevops.id
+  instance_type          = "t3.micro"
   vpc_security_group_ids = [local.mysql_sg_id]
-  subnet_id = local.database_subnet_id
-  iam_instance_profile = aws_iam_instance_profile.mysql.name
-  
+  subnet_id              = local.database_subnet_id
+  iam_instance_profile   = aws_iam_instance_profile.mysql.name
+
   tags = merge(
     {
-        Name = "${local.common_name}-mysql"
+      Name = "${local.common_name}-mysql"
     },
     local.common_tags
   )
@@ -136,10 +136,10 @@ resource "terraform_data" "mysql" {
   ]
 
   connection {
-    type        = "ssh"
-    user        = "ec2-user"
+    type     = "ssh"
+    user     = "ec2-user"
     password = "DevOps321"
-    host        = aws_instance.mysql.private_ip
+    host     = aws_instance.mysql.private_ip
   }
 
   provisioner "file" {

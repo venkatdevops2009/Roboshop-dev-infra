@@ -1,15 +1,15 @@
 variable "environment" {
-    default = "dev"
+  default = "dev"
 }
 
 variable "project" {
-    default = "roboshop"
+  default = "roboshop"
 }
 
 variable "zone_id" {
-    default = "Z0353101YWAUTK0SB32S"
-}  
+  default = "Z0353101YWAUTK0SB32S"
+}
 
 variable "domain_name" {
-    default = "piridishop.shop"
+  default = "piridishop.shop"
 }

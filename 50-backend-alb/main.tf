@@ -9,7 +9,7 @@ resource "aws_lb" "backend_alb" {
 
   tags = merge(
     {
-        Name = "${local.common_name}-backend-alb"
+      Name = "${local.common_name}-backend-alb"
     },
     local.common_tags
   )

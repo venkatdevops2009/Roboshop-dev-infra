@@ -20,7 +20,7 @@ resource "aws_iam_role" "bastion" {
   tags = merge(
     local.common_tags,
     {
-        Name = "${local.common_name}-bastion"
+      Name = "${local.common_name}-bastion"
     }
   )
 }

@@ -1,8 +1,8 @@
 resource "aws_cloudfront_distribution" "roboshop" {
-  
+
   origin {
-    domain_name              = "${var.project}-${var.environment}.${var.domain_name}"
-    origin_id                = "${var.project}-${var.environment}.${var.domain_name}"
+    domain_name = "${var.project}-${var.environment}.${var.domain_name}"
+    origin_id   = "${var.project}-${var.environment}.${var.domain_name}"
 
     custom_origin_config {
       http_port              = 80
@@ -12,10 +12,10 @@ resource "aws_cloudfront_distribution" "roboshop" {
     }
   }
 
-  enabled             = true
-  is_ipv6_enabled     = false
-  comment             = "Some comment"
-  
+  enabled         = true
+  is_ipv6_enabled = false
+  comment         = "Some comment"
+
   # CDN name
   aliases = ["${var.project}-cdn.${var.domain_name}"]
 
@@ -28,7 +28,7 @@ resource "aws_cloudfront_distribution" "roboshop" {
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
-    cache_policy_id = local.cachingDisabled
+    cache_policy_id        = local.cachingDisabled
   }
 
   # Cache behavior with precedence 0
@@ -43,7 +43,7 @@ resource "aws_cloudfront_distribution" "roboshop" {
     max_ttl                = 31536000
     compress               = true
     viewer_protocol_policy = "https-only"
-    cache_policy_id = local.cachingOptmized
+    cache_policy_id        = local.cachingOptmized
   }
 
   # Cache behavior with precedence 1
@@ -58,7 +58,7 @@ resource "aws_cloudfront_distribution" "roboshop" {
     max_ttl                = 31536000
     compress               = true
     viewer_protocol_policy = "https-only"
-    cache_policy_id = local.cachingOptmized
+    cache_policy_id        = local.cachingOptmized
   }
 
 
@@ -71,7 +71,7 @@ resource "aws_cloudfront_distribution" "roboshop" {
 
   tags = merge(
     {
-        Name = "${var.project}-${var.environment}"
+      Name = "${var.project}-${var.environment}"
     },
     local.common_tags
   )
