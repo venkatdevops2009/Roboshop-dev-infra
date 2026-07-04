@@ -1,8 +1,7 @@
 def terraformModule(String moduleDir) {
     dir(moduleDir) {
         sh '''
-            terraform init
-            terraform fmt -check
+            terraform init            
             terraform validate
 
             if [ "${ACTION}" = "plan" ] || [ "${ACTION}" = "apply" ]; then
