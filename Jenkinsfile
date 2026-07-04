@@ -38,7 +38,7 @@ pipeline {
             }
             steps {
                 sh '''
-                terraform -chdir=roboshop-dev-infra/40-database fmt -check
+                terraform -chdir=roboshop-dev-infra/40-databases fmt -check
                 terraform -chdir=roboshop-dev-infra/50-backend-alb fmt -check
                 terraform -chdir=roboshop-dev-infra/70-acm fmt -check
                 terraform -chdir=roboshop-dev-infra/80-forntend-alb fmt -check
@@ -55,7 +55,7 @@ pipeline {
             steps {
 
                 sh '''
-                terraform -chdir=roboshop-dev-infra/40-database init
+                terraform -chdir=roboshop-dev-infra/40-databases init
                 terraform -chdir=roboshop-dev-infra/50-backend-alb init
                 terraform -chdir=roboshop-dev-infra/70-acm init
                 terraform -chdir=roboshop-dev-infra/80-forntend-alb init
@@ -76,7 +76,7 @@ pipeline {
             steps {
 
                 sh '''
-                terraform -chdir=roboshop-dev-infra/40-database plan -out=tfplan
+                terraform -chdir=roboshop-dev-infra/40-databases plan -out=tfplan
                 terraform -chdir=roboshop-dev-infra/50-backend-alb plan -out=tfplan
                 terraform -chdir=roboshop-dev-infra/70-acm plan -out=tfplan
                 terraform -chdir=roboshop-dev-infra/80-forntend-alb plan -out=tfplan
@@ -102,7 +102,7 @@ pipeline {
 
         }
 
-        stage('Terraform Apply - Database') {
+        stage('Terraform Apply - databases') {
 
             when {
                 expression {
@@ -112,7 +112,7 @@ pipeline {
 
             steps {
 
-                dir('roboshop-dev-infra/40-database') {
+                dir('roboshop-dev-infra/40-databases') {
 
                     sh '''
                     terraform apply -auto-approve tfplan
@@ -248,7 +248,7 @@ pipeline {
                 input message: "Destroy Infrastructure?"
 
                 sh '''
-                terraform -chdir=roboshop-dev-infra/40-database destroy -auto-approve
+                terraform -chdir=roboshop-dev-infra/40-databases destroy -auto-approve
 
                 terraform -chdir=roboshop-dev-infra/50-backend-alb destroy -auto-approve
 
