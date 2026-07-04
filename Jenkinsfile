@@ -74,15 +74,7 @@ pipeline {
                     terraformModule('50-backend-alb')
                 }
             }
-        }
-
-        stage('60-Catalogue') {
-            steps {
-                script {
-                    terraformModule('60-catalogue')
-                }
-            }
-        }
+        }        
 
         stage('70-ACM') {
             steps {

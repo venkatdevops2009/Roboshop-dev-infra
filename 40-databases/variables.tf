@@ -7,11 +7,11 @@ variable "environment" {
 }
 
 variable "zone_id" {
-    default = "Z07086101C1CVP7AT2UK4"
+    default = "Z0353101YWAUTK0SB32S"
 }  
 
 variable "domain_name" {
-    default = "daws90s.shop"
+    default = "piridishop.shop"
 }
 
 variable "mysql_root_password" {
