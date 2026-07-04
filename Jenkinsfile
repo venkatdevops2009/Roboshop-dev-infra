@@ -50,6 +50,7 @@ pipeline {
     environment {
         AWS_DEFAULT_REGION = 'us-east-1'
         TF_IN_AUTOMATION   = 'true'
+        TF_CLI_ARGS        = "-no-color"
     }
 
     stages {
