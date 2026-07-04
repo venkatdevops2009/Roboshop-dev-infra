@@ -278,9 +278,7 @@ pipeline {
             echo "Deployment Failed."
         }
 
-        always {
-            cleanWs()
-        }
+       
 
     }
 
